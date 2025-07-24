@@ -16,8 +16,9 @@ SHELL ["conda", "run", "-n", "my-rdkit-env", "/bin/bash", "-c"]
 
 # the above shell command should activate environment and make sure all commands run within it
 #  but it didn't work on first pass, so I am manually activating
-RUN conda activate my-rdkit-env
-RUN conda install conda-forge::rdkit
+RUN conda init \
+    && conda activate my-rdkit-env \
+    && conda install conda-forge::rdkit
 
 # copying everything, even though I think I should only need to ./src directory
 COPY . .
