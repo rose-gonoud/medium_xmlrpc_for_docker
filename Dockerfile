@@ -5,20 +5,13 @@ FROM continuumio/anaconda3
 # set working dir in the container
 WORKDIR /app
 
-# I don't think I can perform the RDKit install from the requirements.txt
 # create virtual env for RDKit
-#  If this fails, I move on to an environment.yml
-#  But I'd rather follow my exact local setup procedure
-RUN conda create -n my-rdkit-env
+COPY environment.yml .
+RUN conda env create -f environment.yml
 
-# activate the environment and make sure subsequent commands are run within it
-SHELL ["conda", "run", "-n", "my-rdkit-env", "/bin/bash", "-c"]
-
-# the above shell command should activate environment and make sure all commands run within it
-#  but it didn't work on first pass, so I am manually activating
-RUN conda init \
-    && conda activate my-rdkit-env \
-    && conda install conda-forge::rdkit
+# activate environment and make sure all commands run within it
+RUN echo "source activate my-rdkit-env" > ~/.bashrc
+ENV PATH /opt/conda/envs/my-rdkit-env/bin:$PATH
 
 # copying everything, even though I think I should only need to ./src directory
 COPY . .
@@ -28,4 +21,4 @@ EXPOSE 8080
 
 # define a command to run the application
 # when the "application" is run, that's just equivalent to spinning up a server within our container to host the RDKit fn
-CMD ["python", "src/serv_rdk.py"]
+CMD ["conda", "run", "-n", "my-rdkit-env", "python", "src/serv_rdk.py"]
