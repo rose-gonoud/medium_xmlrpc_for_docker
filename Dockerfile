@@ -18,4 +18,4 @@ EXPOSE 8080
 
 # define a command to run the application
 # when the "application" is run, that's just equivalent to spinning up a server within our container to host the RDKit fn
-CMD ["python", "src/serv_rdk.py"
+CMD ["python", "src/serv_rdk.py"]
