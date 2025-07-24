@@ -7,13 +7,16 @@ WORKDIR /app
 
 # I don't think I can perform the RDKit install from the requirements.txt
 # create virtual env for RDKit
+#  If this fails, I move on to an environment.yml
+#  But I'd rather follow my exact local setup procedure
 RUN conda create -n my-rdkit-env
 
 # activate the environment and make sure subsequent commands are run within it
-SHELL ["/bin/bash", "--login", "-c"]
+SHELL ["conda", "run", "-n", "my-rdkit-env", "/bin/bash", "-c"]
 
-RUN conda activate my-rdkit-env \
-    && conda install conda-forge::rdkit
+# the above shell command should activate environment and make sure all commands run within it
+# no need to explicit conda activate statement here I think
+RUN conda install conda-forge::rdkit
 
 # copying everything, even though I think I should only need to ./src directory
 COPY . .
