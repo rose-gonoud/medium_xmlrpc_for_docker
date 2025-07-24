@@ -6,12 +6,13 @@ FROM continuumio/anaconda3
 WORKDIR /app
 
 # create virtual env for RDKit
-COPY environment.yml .
-RUN conda env create -f environment.yml
-
+RUN conda create -n my-rdkit-env
 # activate environment and make sure all commands run within it
 RUN echo "source activate my-rdkit-env" > ~/.bashrc
 ENV PATH /opt/conda/envs/my-rdkit-env/bin:$PATH
+
+# perform the conda-forge recommended rdkit install
+RUN conda install conda-forge::rdkit
 
 # copying everything, even though I think I should only need to ./src directory
 COPY . .
