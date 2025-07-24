@@ -5,7 +5,7 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # copying requirements.txt into the container at /app
-COPY requirements.txt
+COPY requirements.txt .
 
 # install those specified packages
 RUN pip install --no-cache-dir -r requirements.txt
