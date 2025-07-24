@@ -1,16 +1,21 @@
 # parent image
-FROM python:3.9-slim-buster
+# make this an Anaconda image to enable the server to build an RDKit environment
+FROM continuumio/anaconda3
 
 # set working dir in the container
 WORKDIR /app
 
-# copying requirements.txt into the container at /app
-COPY requirements.txt .
+# I don't think I can perform the RDKit install from the requirements.txt
+# create virtual env for RDKit
+RUN conda create -n my-rdkit-env
 
-# install those specified packages
-RUN pip install --no-cache-dir -r requirements.txt
+# activate the environment and make sure subsequent commands are run within it
+SHELL ["/bin/bash", "--login", "-c"]
 
-# copy everything else into the container at /app
+RUN conda activate my-rdkit-env \
+    && conda install conda-forge::rdkit
+
+# copying everything, even though I think I should only need to ./src directory
 COPY . .
 
 # specify the port this app's server-side code listens on
